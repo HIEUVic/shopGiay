@@ -1,0 +1,24 @@
+.search {
+  display: flex;
+  width: 400px;
+}
+
+.search input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-right: none;
+  outline: none;
+}
+
+.search button {
+  width: 45px;
+  border: none;
+  background: #111;
+  color: white;
+  cursor: pointer;
+}
+
+.search button:hover {
+  background: #333;
+}

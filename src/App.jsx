@@ -1,13 +1,13 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
-import Header from './components/Header'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import ForgotPassword from './pages/ForgotPassword'
-import Products from './pages/Products'
-import ProductDetail from './pages/ProductDetail'
-import Cart from './pages/Cart'
-import Checkout from './pages/Checkout'
+import Header from './Layout/Header'
+import Login from './Login/Login'
+import Register from './Login/Register'
+import ForgotPassword from './Login/ForgotPassword'
+import Products from './Products/Products'
+import ProductDetail from './Products/ProductDetail'
+import Cart from './Cart/Cart'
+import Checkout from './Checkout/Checkout'
 
 import './App.css'
 
