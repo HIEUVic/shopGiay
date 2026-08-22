@@ -3,6 +3,7 @@ import Search from '../Products/Search'
 import CartCount from '../Cart/CartCount'
 import './Header.css'
 
+const base = import.meta.env.BASE_URL
 function Header() {
   return (
     <header className="header">
@@ -40,7 +41,7 @@ function Header() {
             isActive ? 'active' : ''
           }
         >
-          <img src="/icon/nike-icon.png" alt="nike" />
+          <img src={`${base}icon/nike-icon.png`} alt="nike" />
           Nike
         </NavLink>
 
@@ -50,7 +51,7 @@ function Header() {
             isActive ? 'active' : ''
           }
         >
-          <img src="/icon/adidas-icon.png" alt="Adidas" />
+          <img src={`${base}icon/adidas-icon.png`} alt="Adidas" />
           Adidas
         </NavLink>
 
@@ -60,7 +61,7 @@ function Header() {
             isActive ? 'active' : ''
           }
         >
-          <img src="/icon/asics-icon.png" alt="Asics" />
+          <img src={`${base}icon/asics-icon.png`}  alt="Asics" />
           Asics
         </NavLink>
 
@@ -70,7 +71,7 @@ function Header() {
             isActive ? 'active' : ''
           }
         >
-          <img src="/icon/lacote-icon.png" alt="lacote" />
+          <img src={`${base}icon/lacote-icon.png`} alt="lacote" />
           Lacoste
         </NavLink>
 
@@ -80,27 +81,27 @@ function Header() {
             isActive ? 'active' : ''
           }
         >
-          <img src="/icon/puma-icon.png" alt="puma" />
+          <img src={`${base}icon/puma-icon.png`} alt="puma" />
           Puma
         </NavLink>
 
         <NavLink to="/products">
-          <img src="/icon/pickleball-40x40.png" alt="pickleball" />
+          <img src={`${base}icon/pickleball-40x40.png`} alt="pickleball" />
           Pickleball
         </NavLink>
 
         <NavLink to="/products?brand=Puma">
-          <img src="/icon/thethao-icon.png" alt="" />
+          <img src={`${base}icon/thethao-icon.png`} alt="" />
           Thể Thao
         </NavLink>
 
         <NavLink to="/products?brand=Lacoste">
-          <img src="/icon/bag-icon.png" alt="bag" />
+          <img src={`${base}icon/bag-icon.png`} alt="bag" />
           Phụ Kiện
         </NavLink>
 
         <NavLink>
-          <img src="/icon/sale-icon.png" alt="thunder" />
+          <img src={`${base}icon/sale-icon.png`} alt="thunder" />
           Sale
         </NavLink>
 
