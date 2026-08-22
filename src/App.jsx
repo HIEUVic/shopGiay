@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 import Header from './Layout/Header'
+import Footer from './Layout/Footer'
 import Login from './Login/Login'
 import Register from './Login/Register'
 import ForgotPassword from './Login/ForgotPassword'
@@ -30,6 +31,7 @@ function App() {
         <Route path="/order-success" element={<OrderSuccess />}
 />
       </Routes>
+      <Footer />
     </BrowserRouter>
   )
 }
