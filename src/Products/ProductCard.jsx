@@ -4,11 +4,12 @@ function ProductCard({ product }) {
   return (
     <div className="product-card">
 
-      <img
-        src={product.image}
-        alt={product.name}
-        className="product-image"
-      />
+      <div className="product-image">
+        <img
+          src={product.image}
+          alt={product.name}
+        />
+      </div>
 
       <div className="product-info">
 
