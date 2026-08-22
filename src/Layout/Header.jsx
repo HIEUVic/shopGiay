@@ -1,5 +1,6 @@
 import { Link, NavLink } from 'react-router-dom'
 import Search from '../Products/Search'
+import CartCount from '../Cart/CartCount'
 import './Header.css'
 
 function Header() {
@@ -12,7 +13,7 @@ function Header() {
           to="/products"
           className="logo"
         >
-          KICKS
+         <h2> Myshoes</h2>
         </Link>
 
         <Search />
@@ -24,7 +25,7 @@ function Header() {
           </Link>
 
           <Link to="/cart">
-            🛒 Giỏ hàng
+            🛒 Giỏ hàng <CartCount />
           </Link>
 
         </div>
@@ -34,20 +35,12 @@ function Header() {
       <nav className="category-menu">
 
         <NavLink
-          to="/products"
-          className={({ isActive }) =>
-            isActive ? 'active' : ''
-          }
-        >
-          Tất cả sản phẩm
-        </NavLink>
-
-        <NavLink
           to="/products?brand=Nike"
           className={({ isActive }) =>
             isActive ? 'active' : ''
           }
         >
+          <img src="/icon/nike-icon.png" alt="nike" />
           Nike
         </NavLink>
 
@@ -57,6 +50,7 @@ function Header() {
             isActive ? 'active' : ''
           }
         >
+          <img src="/icon/adidas-icon.png" alt="Adidas" />
           Adidas
         </NavLink>
 
@@ -66,6 +60,7 @@ function Header() {
             isActive ? 'active' : ''
           }
         >
+          <img src="/icon/asics-icon.png" alt="Asics" />
           Asics
         </NavLink>
 
@@ -75,6 +70,7 @@ function Header() {
             isActive ? 'active' : ''
           }
         >
+          <img src="/icon/lacote-icon.png" alt="lacote" />
           Lacoste
         </NavLink>
 
@@ -84,7 +80,28 @@ function Header() {
             isActive ? 'active' : ''
           }
         >
+          <img src="/icon/puma-icon.png" alt="puma" />
           Puma
+        </NavLink>
+
+        <NavLink to="/products">
+          <img src="/icon/pickleball-40x40.png" alt="pickleball" />
+          Pickleball
+        </NavLink>
+
+        <NavLink to="/products?brand=Puma">
+          <img src="/icon/thethao-icon.png" alt="" />
+          Thể Thao
+        </NavLink>
+
+        <NavLink to="/products?brand=Lacoste">
+          <img src="/icon/bag-icon.png" alt="bag" />
+          Phụ Kiện
+        </NavLink>
+
+        <NavLink>
+          <img src="/icon/sale-icon.png" alt="thunder" />
+          Sale
         </NavLink>
 
       </nav>

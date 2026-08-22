@@ -8,6 +8,7 @@ import Products from './Products/Products'
 import ProductDetail from './Products/ProductDetail'
 import Cart from './Cart/Cart'
 import Checkout from './Checkout/Checkout'
+import OrderSuccess from './Checkout/OrderSuccess'
 
 import './App.css'
 
@@ -26,6 +27,8 @@ function App() {
 
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/order-success" element={<OrderSuccess />}
+/>
       </Routes>
     </BrowserRouter>
   )

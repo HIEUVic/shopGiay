@@ -1,42 +1,57 @@
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
-import './Cart.css'
+import CartItem from './CartItem'
+import { getCart, saveCart } from './CartStorage'
+import './Style.css'
 
 function Cart() {
-  const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem('cart')
+  const [cart, setCart] = useState(getCart) 
 
-    return savedCart ? JSON.parse(savedCart) : []
-  })
-
-  const updateQuantity = (id, size, quantity) => {
+  const updateQuantity = (
+    id,
+    size,
+    quantity
+  ) => {
     const newCart = cart.map((item) =>
-      item.id === id && item.size === size
+      item.id === id &&
+      item.size === size
         ? { ...item, quantity }
         : item
     )
-
     setCart(newCart)
+    saveCart(newCart)
 
-    localStorage.setItem(
-      'cart',
-      JSON.stringify(newCart)
+    window.dispatchEvent(
+      new Event('cartUpdated')
     )
+  
   }
 
   const removeItem = (id, size) => {
     const newCart = cart.filter(
       (item) =>
-        !(item.id === id && item.size === size)
+        !(
+          item.id === id &&
+          item.size === size
+        )
     )
-
     setCart(newCart)
+    saveCart(newCart)
 
-    localStorage.setItem(
-      'cart',
-      JSON.stringify(newCart)
+    window.dispatchEvent(
+      new Event('cartUpdated')
     )
+
   }
+
+  // const clearCart = () => {
+  //   setCart([])
+  //   saveCart([])
+
+  //   window.dispatchEvent(
+  //     new Event('cartUpdated')
+  //   )
+  // }
 
   const total = cart.reduce(
     (sum, item) =>
@@ -47,6 +62,7 @@ function Cart() {
   if (cart.length === 0) {
     return (
       <div className="cart-empty">
+
         <h1>Giỏ hàng</h1>
 
         <p>
@@ -56,12 +72,14 @@ function Cart() {
         <Link to="/products">
           Tiếp tục mua hàng
         </Link>
+
       </div>
     )
   }
 
   return (
     <div className="cart-page">
+
       <div className="cart-container">
 
         <h1>Giỏ hàng</h1>
@@ -69,87 +87,22 @@ function Cart() {
         <div className="cart-list">
 
           {cart.map((item) => (
-            <div
-              className="cart-item"
+            <CartItem
               key={`${item.id}-${item.size}`}
-            >
-
-              <img
-                src={item.image}
-                alt={item.name}
-              />
-
-              <div className="cart-info">
-
-                <p className="cart-brand">
-                  {item.brand}
-                </p>
-
-                <h2>
-                  {item.name}
-                </h2>
-
-                <p>
-                  Size: {item.size}
-                </p>
-
-                <p className="cart-price">
-                  {item.price.toLocaleString('vi-VN')} ₫
-                </p>
-
-              </div>
-
-              <div className="cart-quantity">
-
-                <button
-                  onClick={() =>
-                    updateQuantity(
-                      item.id,
-                      item.size,
-                      Math.max(
-                        1,
-                        item.quantity - 1
-                      )
-                    )
-                  }
-                >
-                  -
-                </button>
-
-                <span>
-                  {item.quantity}
-                </span>
-
-                <button
-                  onClick={() =>
-                    updateQuantity(
-                      item.id,
-                      item.size,
-                      item.quantity + 1
-                    )
-                  }
-                >
-                  +
-                </button>
-
-              </div>
-
-              <button
-                className="remove-button"
-                onClick={() =>
-                  removeItem(
-                    item.id,
-                    item.size
-                  )
-                }
-              >
-                Xóa
-              </button>
-
-            </div>
+              item={item}
+              onUpdateQuantity={updateQuantity}
+              onRemove={removeItem}
+            />
           ))}
 
         </div>
+
+        {/* <button
+          className="clear-cart-button"
+          onClick={clearCart}
+        >
+          Xóa toàn bộ giỏ hàng
+        </button> */}
 
         <div className="cart-summary">
 
@@ -168,6 +121,7 @@ function Cart() {
         </div>
 
       </div>
+
     </div>
   )
 }

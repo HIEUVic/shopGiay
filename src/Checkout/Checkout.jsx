@@ -1,71 +1,86 @@
-import { Link } from 'react-router-dom'
 import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+
+import CustomerForm from './CustomerForm'
+import OrderSummary from './OrderSummary'
+
+import { getCart, saveCart } from '../Cart/CartStorage'
+import { saveOrder } from './OrderStorage'
+
 import './Checkout.css'
 
 function Checkout() {
-  const [cart] = useState(() => {
-    const savedCart = localStorage.getItem('cart')
+  const navigate = useNavigate()
 
-    return savedCart ? JSON.parse(savedCart) : []
-  })
+  const [cart] = useState(getCart)
 
-  const [form, setForm] = useState({
+  const [customer, setCustomer] = useState({
     name: '',
     phone: '',
-    address: ''
+    address: '',
+    payment: 'cod'
   })
 
-  const [payment, setPayment] = useState('cod')
-
-  const total = cart.reduce(
-    (sum, item) =>
-      sum + item.price * item.quantity,
-    0
-  )
-
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
+    const { name, value } = e.target
+
+    setCustomer({
+      ...customer,
+      [name]: value
     })
   }
 
-  const handleOrder = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
 
-    if (cart.length === 0) {
-      alert('Giỏ hàng đang trống')
-      return
-    }
-
     if (
-      !form.name ||
-      !form.phone ||
-      !form.address
+      !customer.name ||
+      !customer.phone ||
+      !customer.address
     ) {
-      alert('Vui lòng nhập đầy đủ thông tin nhận hàng')
+      alert('Vui lòng nhập đầy đủ thông tin')
       return
     }
 
-    alert('Đặt hàng thành công!')
+    const total = cart.reduce(
+      (sum, item) =>
+        sum + item.price * item.quantity,
+      0
+    )
 
-    localStorage.removeItem('cart')
+    const order = {
+      id: Date.now(),
+      customer,
+      items: cart,
+      total,
+      date: new Date().toLocaleString('vi-VN')
+    }
 
-    window.location.href = '/products'
+    saveOrder(order)
+
+    saveCart([])
+
+    window.dispatchEvent(
+      new Event('cartUpdated')
+    )
+
+    navigate('/order-success')
   }
 
   if (cart.length === 0) {
     return (
       <div className="checkout-empty">
-        <h1>Không có sản phẩm</h1>
+
+        <h1>Thanh toán</h1>
 
         <p>
-          Bạn chưa có sản phẩm nào trong giỏ hàng.
+          Giỏ hàng của bạn đang trống.
         </p>
 
         <Link to="/products">
-          Quay lại sản phẩm
+          Tiếp tục mua hàng
         </Link>
+
       </div>
     )
   }
@@ -79,129 +94,23 @@ function Checkout() {
 
         <div className="checkout-content">
 
-          <form
-            className="checkout-form"
-            onSubmit={handleOrder}
-          >
+          <CustomerForm
+            customer={customer}
+            onChange={handleChange}
+          />
 
-            <h2>Thông tin nhận hàng</h2>
-
-            <div className="form-group">
-              <label>Họ và tên</label>
-
-              <input
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="Nhập họ và tên"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Số điện thoại</label>
-
-              <input
-                type="tel"
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                placeholder="Nhập số điện thoại"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Địa chỉ nhận hàng</label>
-
-              <textarea
-                name="address"
-                value={form.address}
-                onChange={handleChange}
-                placeholder="Nhập địa chỉ nhận hàng"
-                rows="4"
-              />
-            </div>
-
-            <h2>Phương thức thanh toán</h2>
-
-            <label className="payment-option">
-              <input
-                type="radio"
-                value="cod"
-                checked={payment === 'cod'}
-                onChange={(e) =>
-                  setPayment(e.target.value)
-                }
-              />
-
-              Thanh toán khi nhận hàng
-            </label>
-
-            <label className="payment-option">
-              <input
-                type="radio"
-                value="banking"
-                checked={payment === 'banking'}
-                onChange={(e) =>
-                  setPayment(e.target.value)
-                }
-              />
-
-              Chuyển khoản ngân hàng
-            </label>
-
-            <button
-              type="submit"
-              className="order-button"
-            >
-              Đặt hàng
-            </button>
-
-          </form>
-
-          <div className="order-summary">
-
-            <h2>Đơn hàng của bạn</h2>
-
-            {cart.map((item) => (
-              <div
-                className="summary-item"
-                key={`${item.id}-${item.size}`}
-              >
-
-                <img
-                  src={item.image}
-                  alt={item.name}
-                />
-
-                <div>
-                  <h3>{item.name}</h3>
-
-                  <p>
-                    Size: {item.size}
-                  </p>
-
-                  <p>
-                    Số lượng: {item.quantity}
-                  </p>
-                </div>
-
-              </div>
-            ))}
-
-            <div className="summary-total">
-
-              <span>Tổng tiền</span>
-
-              <strong>
-                {total.toLocaleString('vi-VN')} ₫
-              </strong>
-
-            </div>
-
-          </div>
+          <OrderSummary
+            cart={cart}
+          />
 
         </div>
+
+        <button
+          className="order-button"
+          onClick={handleSubmit}
+        >
+          Đặt hàng
+        </button>
 
       </div>
 

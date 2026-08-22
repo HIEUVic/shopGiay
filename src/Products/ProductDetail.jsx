@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useState } from 'react'
 import products from '../data/products'
 import './ProductDetail.css'
+import AddToCart from '../Cart/AddToCart'
 
 function ProductDetail() {
   const { id } = useParams()
@@ -24,55 +25,7 @@ function ProductDetail() {
     )
   }
 
-  const handleAddToCart = () => {
-    if (!size) {
-      alert('Vui lòng chọn size giày')
-      return
-    }
-
-    const cart = JSON.parse(
-      localStorage.getItem('cart')
-    ) || []
-
-    const existingItem = cart.find(
-      (item) =>
-        item.id === product.id &&
-        item.size === size
-    )
-
-    let newCart
-
-    if (existingItem) {
-      newCart = cart.map((item) =>
-        item.id === product.id &&
-        item.size === size
-          ? {
-              ...item,
-              quantity: item.quantity + quantity
-            }
-          : item
-      )
-    } else {
-      const newItem = {
-        id: product.id,
-        name: product.name,
-        brand: product.brand,
-        price: product.price,
-        image: product.image,
-        size: size,
-        quantity: quantity
-      }
-
-      newCart = [...cart, newItem]
-    }
-
-    localStorage.setItem(
-      'cart',
-      JSON.stringify(newCart)
-    )
-
-    alert('Đã thêm sản phẩm vào giỏ hàng')
-  }
+  
 
   return (
     <div className="product-detail-page">
@@ -117,6 +70,7 @@ function ProductDetail() {
             <h3>Số lượng</h3>
 
             <div className="quantity">
+
               <button
                 onClick={() =>
                   setQuantity(Math.max(1, quantity - 1))
@@ -134,15 +88,15 @@ function ProductDetail() {
               >
                 +
               </button>
+
             </div>
           </div>
 
-          <button
-            className="add-cart-button"
-            onClick={handleAddToCart}
-          >
-            Thêm vào giỏ hàng
-          </button>
+          <AddToCart
+            product={product}
+            size={size}
+            quantity={quantity}
+          />
 
           <Link
             to="/products"
