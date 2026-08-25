@@ -14,7 +14,7 @@ function Header() {
           to="/products"
           className="logo"
         >
-         <h2> Myshoes</h2>
+         <h2> HShop</h2>
         </Link>
 
         <Search />
