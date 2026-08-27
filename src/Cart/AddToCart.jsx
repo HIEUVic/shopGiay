@@ -1,4 +1,3 @@
-import { getCart, saveCart } from './CartStorage'
 import './Style.css'
 
 function AddToCart({
@@ -6,60 +5,64 @@ function AddToCart({
   size,
   quantity
 }) {
-  function handleAddToCart() {
+  async function handleAddToCart() {
 
     if (!size) {
       alert('Vui lòng chọn size giày')
       return
     }
 
-    const cart = getCart()
-
-    const existingItem = cart.find(
-      (item) =>
-        item.id === product.id &&
-        item.size === size
+    const user = JSON.parse(
+      localStorage.getItem('user')
     )
 
-    let newCart
-
-    if (existingItem) {
-
-      newCart = cart.map((item) =>
-        item.id === product.id &&
-        item.size === size
-          ? {
-              ...item,
-              quantity:
-                item.quantity + quantity
-            }
-          : item
-      )
-
-    } else {
-
-      newCart = [
-        ...cart,
-        {
-          id: product.id,
-          name: product.name,
-          brand: product.brand,
-          price: product.price,
-          image: product.image,
-          size,
-          quantity
-        }
-      ]
-
+    if (!user) {
+      alert('Vui lòng đăng nhập trước')
+      return
     }
 
-    saveCart(newCart)
+    try {
 
-    window.dispatchEvent(
-      new Event('cartUpdated')
-    )
+      const response = await fetch(
+        'http://localhost:5000/api/cart',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId: user.id,
+            id: product.id,
+            name: product.name,
+            brand: product.brand,
+            price: product.price,
+            image: product.image,
+            size,
+            quantity
+          })
+        }
+      )
 
-    alert('Đã thêm sản phẩm vào giỏ hàng')
+      const data = await response.json()
+
+      if (!response.ok) {
+        alert(data.message)
+        return
+      }
+
+      window.dispatchEvent(
+        new Event('cartUpdated')
+      )
+
+      alert(data.message)
+
+    } catch (error) {
+
+      console.error(error)
+
+      alert('Không thể kết nối đến server')
+
+    }
   }
 
   return (

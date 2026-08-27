@@ -7,7 +7,7 @@ function ForgotPassword() {
 
   const [email, setEmail] = useState('')
 
-  const handleForgotPassword = (e) => {
+  const handleForgotPassword = async (e) => {
     e.preventDefault()
 
     if (!email) {
@@ -15,9 +15,35 @@ function ForgotPassword() {
       return
     }
 
-    alert('Yêu cầu đặt lại mật khẩu đã được gửi!')
+    try {
+      const response = await fetch(
+        'http://localhost:5000/api/auth/forgot-password',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email
+          })
+        }
+      )
 
-    navigate('/login')
+      const data = await response.json()
+
+      if (!response.ok) {
+        alert(data.message)
+        return
+      }
+
+      alert(data.message)
+
+      navigate('/login')
+
+    } catch (error) {
+      console.error(error)
+      alert('Không thể kết nối đến server')
+    }
   }
 
   return (

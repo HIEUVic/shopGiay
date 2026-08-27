@@ -1,47 +1,150 @@
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CartItem from './CartItem'
-import { getCart, saveCart } from './CartStorage'
 import './Style.css'
 
 function Cart() {
-  const [cart, setCart] = useState(getCart) 
+  const [cart, setCart] = useState([]) 
+  useEffect(() => {
 
-  const updateQuantity = (
+    const user = JSON.parse(
+      localStorage.getItem('user')
+    )
+
+    if (!user) {
+      return
+    }
+
+    const fetchCart = async () => {
+
+      try {
+
+        const response = await fetch(
+          `http://localhost:5000/api/cart/${user.id}`
+        )
+
+        const data = await response.json()
+
+        if (!response.ok) {
+          alert(data.message)
+          return
+        }
+
+        setCart(data)
+
+      } catch (error) {
+
+        console.error(error)
+
+        alert('Không thể kết nối đến server')
+
+      }
+
+    }
+
+    fetchCart()
+
+  }, [])
+
+  const updateQuantity = async (
     id,
     size,
     quantity
   ) => {
-    const newCart = cart.map((item) =>
-      item.id === id &&
-      item.size === size
-        ? { ...item, quantity }
-        : item
-    )
-    setCart(newCart)
-    saveCart(newCart)
 
-    window.dispatchEvent(
-      new Event('cartUpdated')
+    const user = JSON.parse(
+      localStorage.getItem('user')
     )
-  
+
+    if (!user) {
+      alert('Vui lòng đăng nhập trước')
+      return
+    }
+
+    try {
+
+      const response = await fetch(
+        `http://localhost:5000/api/cart/${user.id}/${id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            size,
+            quantity
+          })
+        }
+      )
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        alert(data.message)
+        return
+      }
+
+      setCart(data.cart)
+
+      window.dispatchEvent(
+        new Event('cartUpdated')
+      )
+
+    } catch (error) {
+
+      console.error(error)
+
+      alert('Không thể kết nối đến server')
+
+    }
   }
 
-  const removeItem = (id, size) => {
-    const newCart = cart.filter(
-      (item) =>
-        !(
-          item.id === id &&
-          item.size === size
-        )
-    )
-    setCart(newCart)
-    saveCart(newCart)
+  const removeItem = async (id, size) => {
 
-    window.dispatchEvent(
-      new Event('cartUpdated')
+    const user = JSON.parse(
+      localStorage.getItem('user')
     )
 
+    if (!user) {
+      alert('Vui lòng đăng nhập trước')
+      return
+    }
+
+    try {
+
+      const response = await fetch(
+        `http://localhost:5000/api/cart/${user.id}/${id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            size
+          })
+        }
+      )
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        alert(data.message)
+        return
+      }
+
+      setCart(data.cart)
+
+      window.dispatchEvent(
+        new Event('cartUpdated')
+      )
+
+    } catch (error) {
+
+      console.error(error)
+
+      alert('Không thể kết nối đến server')
+
+    }
   }
 
   // const clearCart = () => {

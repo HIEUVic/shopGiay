@@ -1,31 +1,63 @@
 import { Link, useParams } from 'react-router-dom'
-import { useState } from 'react'
-import products from '../data/products'
+import { useEffect, useState } from 'react'
 import './ProductDetail.css'
 import AddToCart from '../Cart/AddToCart'
 
 function ProductDetail() {
   const { id } = useParams()
 
-  const product = products.find(
-    (product) => product.id === Number(id)
-  )
+  const [product, setProduct] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   const [size, setSize] = useState('')
   const [quantity, setQuantity] = useState(1)
 
-  if (!product) {
+  useEffect(() => {
+    fetch(`http://localhost:5000/api/products/${id}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Không tìm thấy sản phẩm')
+        }
+
+        return response.json()
+      })
+      .then((data) => {
+        const productWithImage = {
+          ...data,
+          image: `${import.meta.env.BASE_URL}${data.image}`
+        }
+
+        setProduct(productWithImage)
+        setLoading(false)
+      })
+      .catch((error) => {
+        console.error(error)
+        setError('Không tìm thấy sản phẩm')
+        setLoading(false)
+      })
+  }, [id])
+  
+
+  if (loading) {
+    return (
+      <div className="product-not-found">
+        <h1>Đang tải sản phẩm...</h1>
+      </div>
+    )
+  }
+
+  if (error || !product) {
     return (
       <div className="product-not-found">
         <h1>Không tìm thấy sản phẩm</h1>
+
         <Link to="/products">
           Quay lại sản phẩm
         </Link>
       </div>
     )
   }
-
-  
 
   return (
     <div className="product-detail-page">

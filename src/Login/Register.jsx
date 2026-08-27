@@ -10,7 +10,7 @@ function Register() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault()
 
     if (!name || !email || !password || !confirmPassword) {
@@ -23,9 +23,37 @@ function Register() {
       return
     }
 
-    alert('Đăng ký thành công!')
+    try {
+      const response = await fetch(
+        'http://localhost:5000/api/auth/register',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            password
+          })
+        }
+      )
 
-    navigate('/login')
+      const data = await response.json()
+
+      if (!response.ok) {
+        alert(data.message)
+        return
+      }
+
+      alert(data.message)
+
+      navigate('/login')
+
+    } catch (error) {
+      console.error(error)
+      alert('Không thể kết nối đến server')
+    }
   }
 
   return (

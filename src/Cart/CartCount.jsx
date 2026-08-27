@@ -1,37 +1,55 @@
 import { useEffect, useState } from 'react'
-import { getCart } from './CartStorage'
 
 function CartCount() {
-  const [count, setCount] = useState(() => {
-    const cart = getCart()
+  const [count, setCount] = useState(0)
 
-    return cart.reduce(
-      (total, item) => total + item.quantity,
-      0
-    )
-  })
+  const fetchCartCount = async () => {
+    const savedUser = localStorage.getItem('user')
+
+    if (!savedUser) {
+      return
+    }
+
+    const user = JSON.parse(savedUser)
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/cart/${user.id}`
+      )
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        return
+      }
+
+      const total = data.reduce(
+        (sum, item) =>
+          sum + item.quantity,
+        0
+      )
+
+      setCount(total)
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   useEffect(() => {
-    const updateCartCount = () => {
-      const cart = getCart()
-
-      setCount(
-        cart.reduce(
-          (total, item) => total + item.quantity,
-          0
-        )
-      )
+    const handleCartUpdated = () => {
+      fetchCartCount()
     }
 
     window.addEventListener(
       'cartUpdated',
-      updateCartCount
+      handleCartUpdated
     )
 
     return () => {
       window.removeEventListener(
         'cartUpdated',
-        updateCartCount
+        handleCartUpdated
       )
     }
   }, [])

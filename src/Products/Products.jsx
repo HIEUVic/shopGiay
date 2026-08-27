@@ -1,6 +1,6 @@
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-import products from '../data/products'
 
 import ProductCard from './ProductCard'
 
@@ -8,6 +8,34 @@ import './Products.css'
 
 function Products() {
   const [searchParams] = useSearchParams()
+
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+    useEffect(() => {
+      fetch('http://localhost:5000/api/products')
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Không thể lấy dữ liệu sản phẩm')
+          }
+
+          return response.json()
+        })
+        .then((data) => {
+          const productsWithImages = data.map((product) => ({
+            ...product,
+            image: `${import.meta.env.BASE_URL}${product.image}`
+          }))
+
+          setProducts(productsWithImages)
+          setLoading(false)
+        })
+        .catch((error) => {
+          console.error(error)
+          setError('Không thể kết nối đến server')
+          setLoading(false)
+        })
+    }, [])
 
   const keyword = searchParams.get('search') || ''
   const brand = searchParams.get('brand') || ''
@@ -25,6 +53,25 @@ function Products() {
     return matchKeyword && matchBrand
   })
 
+  if (loading) {
+    return (
+      <div className="products-page">
+        <div className="products-container">
+          <h1>Đang tải sản phẩm...</h1>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="products-page">
+        <div className="products-container">
+          <h1>{error}</h1>
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="products-page">
 

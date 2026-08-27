@@ -8,7 +8,7 @@ function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
 
     if (!email || !password) {
@@ -16,8 +16,45 @@ function Login() {
       return
     }
 
-    alert('Đăng nhập thành công!')
-    navigate('/products')
+    try {
+      const response = await fetch(
+        'http://localhost:5000/api/auth/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email,
+            password
+          })
+        }
+      )
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        alert(data.message)
+        return
+      }
+
+      localStorage.setItem(
+        'user',
+        JSON.stringify(data.user)
+      )
+
+      window.dispatchEvent(
+        new Event('userUpdated')
+      )
+      
+      alert(data.message)
+
+      navigate('/products')
+
+    } catch (error) {
+      console.error(error)
+      alert('Không thể kết nối đến server')
+    }
   }
 
   return (

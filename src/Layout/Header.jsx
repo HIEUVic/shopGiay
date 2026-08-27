@@ -1,10 +1,60 @@
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate  } from 'react-router-dom'
 import Search from '../Products/Search'
 import CartCount from '../Cart/CartCount'
 import './Header.css'
+import { useEffect, useState } from 'react'
 
 const base = import.meta.env.BASE_URL
 function Header() {
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user')
+
+    return savedUser
+      ? JSON.parse(savedUser)
+      : null
+  })
+  const [showUserMenu, setShowUserMenu] = useState(false)
+
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    localStorage.removeItem('user')
+
+    setUser(null)
+
+    window.dispatchEvent(
+      new Event('userUpdated')
+    )
+
+    window.dispatchEvent(
+      new Event('cartUpdated')
+    )
+    navigate('/login')
+  }
+  useEffect(() => {
+    const handleUserUpdated = () => {
+      const savedUser = localStorage.getItem('user')
+
+      setUser(
+        savedUser
+          ? JSON.parse(savedUser)
+          : null
+      )
+    }
+
+    window.addEventListener(
+      'userUpdated',
+      handleUserUpdated
+    )
+
+    return () => {
+      window.removeEventListener(
+        'userUpdated',
+        handleUserUpdated
+      )
+    }
+
+  }, [])
   return (
     <header className="header">
 
@@ -21,9 +71,36 @@ function Header() {
 
         <div className="header-actions">
 
-          <Link to="/login">
-            👤 Đăng nhập
-          </Link>
+          {user ? (
+            <div className="user-menu">
+
+              <button
+                className="user-button"
+                onClick={() =>
+                  setShowUserMenu(!showUserMenu)
+                }
+              >
+                👤 {user.name} ▾
+              </button>
+
+              {showUserMenu && (
+                <div className="user-dropdown">
+
+                  <button
+                    onClick={handleLogout}
+                  >
+                    Đăng xuất
+                  </button>
+
+                </div>
+              )}
+
+            </div>
+          ) : (
+            <Link to="/login">
+              👤 Đăng nhập
+            </Link>
+          )}
 
           <Link to="/cart">
             🛒 Giỏ hàng <CartCount />
