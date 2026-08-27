@@ -14,7 +14,7 @@ function CartCount() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/cart/${user.id}`
+        `https://shopgiay-onlb.onrender.com/api/cart/${user.id}`
       )
 
       const data = await response.json()

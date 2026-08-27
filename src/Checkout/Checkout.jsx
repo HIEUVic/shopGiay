@@ -26,7 +26,7 @@ function Checkout() {
       try {
 
         const response = await fetch(
-          `http://localhost:5000/api/cart/${user.id}`
+          `https://shopgiay-onlb.onrender.com/api/cart/${user.id}`
         )
 
         const data = await response.json()
@@ -94,7 +94,7 @@ function Checkout() {
     try {
 
       const response = await fetch(
-        'http://localhost:5000/api/orders',
+        'https://shopgiay-onlb.onrender.com/api/orders',
         {
           method: 'POST',
           headers: {

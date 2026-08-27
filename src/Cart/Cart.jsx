@@ -20,7 +20,7 @@ function Cart() {
       try {
 
         const response = await fetch(
-          `http://localhost:5000/api/cart/${user.id}`
+          `https://shopgiay-onlb.onrender.com/api/cart/${user.id}`
         )
 
         const data = await response.json()
@@ -64,7 +64,7 @@ function Cart() {
     try {
 
       const response = await fetch(
-        `http://localhost:5000/api/cart/${user.id}/${id}`,
+        `https://shopgiay-onlb.onrender.com/api/cart/${user.id}/${id}`,
         {
           method: 'PUT',
           headers: {
@@ -113,7 +113,7 @@ function Cart() {
     try {
 
       const response = await fetch(
-        `http://localhost:5000/api/cart/${user.id}/${id}`,
+        `https://shopgiay-onlb.onrender.com/api/cart/${user.id}/${id}`,
         {
           method: 'DELETE',
           headers: {

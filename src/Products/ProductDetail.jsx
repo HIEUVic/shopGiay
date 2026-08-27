@@ -14,7 +14,7 @@ function ProductDetail() {
   const [quantity, setQuantity] = useState(1)
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/products/${id}`)
+    fetch(`https://shopgiay-onlb.onrender.com/api/products/${id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Không tìm thấy sản phẩm')

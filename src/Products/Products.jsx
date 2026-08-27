@@ -13,7 +13,7 @@ function Products() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
     useEffect(() => {
-      fetch('http://localhost:5000/api/products')
+      fetch('https://shopgiay-onlb.onrender.com/api/products')
         .then((response) => {
           if (!response.ok) {
             throw new Error('Không thể lấy dữ liệu sản phẩm')
